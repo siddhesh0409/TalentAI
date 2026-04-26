@@ -72,6 +72,21 @@ const App = (() => {
 
     // JD textarea char count
     document.getElementById('jdIn')?.addEventListener('input', UI.updateCharCount);
+
+    // Search candidates
+    document.getElementById('candidateSearch')?.addEventListener('input', (e) => {
+      Render.searchCandidates(e.target.value);
+    });
+
+    // Sort dropdown
+    document.getElementById('sortSelect')?.addEventListener('change', (e) => {
+      Render.sortCandidates(e.target.value);
+    });
+
+    // Download CSV
+    document.getElementById('downloadBtn')?.addEventListener('click', () => {
+      Render.downloadCSV();
+    });
   }
 
   function _closeCSVModal() {
@@ -281,27 +296,8 @@ const App = (() => {
         onResult: ({ shortlist, meta, jdParsed }) => {
           shortlistCache = shortlist;
           Render.resultsMeta(meta);
+          Render.renderShortlist(shortlist, jdParsed);
           UI.showResults();
-
-          const list = document.getElementById('clist');
-          if (!list) return;
-          list.innerHTML = '';
-
-          shortlist.forEach((candidate, i) => {
-            const card = Render.candidateCard(candidate, i, jdParsed);
-            list.appendChild(card);
-
-            // Animate score bars after the card is in the DOM
-            setTimeout(() => {
-              card.querySelectorAll('.mbar-fill[data-t]').forEach((f) => {
-                f.style.width = f.dataset.t + '%';
-              });
-            }, 200 + i * 80);
-
-            if (typeof gsap !== 'undefined') {
-              gsap.from(card, { y: 16, opacity: 0, duration: 0.4, ease: 'power2.out', delay: 0.1 + i * 0.08 });
-            }
-          });
         },
 
         onError: (message) => {
@@ -328,30 +324,6 @@ const App = (() => {
     );
   }
 
-  // ── Card expand / collapse ─────────────────────────────────────────────────
-  function toggleCard(id) {
-    const card    = document.getElementById(`card-${id}`);
-    const wasOpen = card?.classList.contains('expanded');
-    document.querySelectorAll('.ccard.expanded').forEach((c) => c.classList.remove('expanded'));
-    if (!wasOpen && card) {
-      card.classList.add('expanded');
-      setTimeout(() => Render.renderChart(card), 50);
-      setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
-    }
-  }
-
-  // ── Tab switching inside a card ────────────────────────────────────────────
-  function switchTab(e, cardId, tab) {
-    e.stopPropagation();
-    const card = document.getElementById(`card-${cardId}`);
-    if (!card) return;
-    card.querySelectorAll('.dtab').forEach((b) => b.classList.remove('active'));
-    card.querySelectorAll('.dtab-panel').forEach((p) => p.classList.remove('active'));
-    e.target.classList.add('active');
-    document.getElementById(`tp-${cardId}-${tab}`)?.classList.add('active');
-    if (tab === 'overview') setTimeout(() => Render.renderChart(card), 50);
-  }
-
   // ── Live Chat ──────────────────────────────────────────────────────────────
   function openLiveChat(candidateId) {
     const candidate = shortlistCache.find(
@@ -364,8 +336,8 @@ const App = (() => {
     UI.showChatModal(candidate, currentJdRole, currentApiKey, currentRunId);
   }
 
-  // Expose only what the HTML templates need (card onclick handlers)
-  return { init, runAgent, toggleCard, switchTab, openLiveChat };
+  // Expose only what's needed externally
+  return { init, runAgent, openLiveChat };
 })();
 
 window.App = App;
