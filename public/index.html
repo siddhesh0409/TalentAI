@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="AI-Powered Talent Scouting & Engagement Agent — Catalyst Hackathon 2025"/>
+  <title>TalentAI — Mission Control</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://api.fontshare.com"/>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=cabinet-grotesk@300,400,500,700,800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="/css/base.css"/>
+  <link rel="stylesheet" href="/css/layout.css"/>
+  <link rel="stylesheet" href="/css/components.css"/>
+
+  <style>
+    /* Extra styles */
+    .source-badge { font-family:var(--fm); font-size:11px; padding:4px 10px; border-radius:6px; }
+    .source-badge.builtin { background:rgba(0,144,255,0.08); border:1px solid rgba(0,144,255,0.2); color:var(--neon2); }
+    .source-badge.csv     { background:rgba(0,229,204,0.08); border:1px solid rgba(0,229,204,0.2); color:var(--teal); }
+    #candidateSourceBadge { display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
+    .clear-csv-btn { font-family:var(--fm); font-size:10px; background:none; border:none; color:var(--rose); cursor:pointer; padding:0; }
+    .clear-csv-btn:hover { text-decoration:underline; }
+
+    .csv-upload-btn {
+      width:100%; margin-top:10px; padding:10px;
+      background:rgba(0,229,204,0.06); border:1px dashed rgba(0,229,204,0.3);
+      border-radius:10px; color:var(--teal); font-family:var(--fm); font-size:12px;
+      cursor:pointer; transition:all 0.2s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .csv-upload-btn:hover { background:rgba(0,229,204,0.12); border-color:rgba(0,229,204,0.5); }
+
+    .live-chat-btn {
+      font-family:var(--fm); font-size:11px; padding:6px 14px; border-radius:8px;
+      background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.3);
+      color:var(--plasma2); cursor:pointer; transition:all 0.2s;
+    }
+    .live-chat-btn:hover { background:rgba(124,58,237,0.2); transform:translateY(-1px); }
+
+    .signals-wrap { display:flex; flex-wrap:wrap; gap:6px; }
+    .signal-tag { font-size:11px; padding:4px 10px; border-radius:100px; background:rgba(0,255,136,0.07); border:1px solid rgba(0,255,136,0.2); color:var(--lime); }
+    .signal-tag.concern { background:rgba(255,79,110,0.07); border-color:rgba(255,79,110,0.2); color:var(--rose); }
+    .breakdown-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      position:fixed; inset:0; z-index:1000;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(2,4,8,0.88); backdrop-filter:blur(8px);
+      opacity:0; pointer-events:none; transition:opacity 0.25s;
+    }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal-box {
+      background:var(--raised); border:1px solid var(--line); border-radius:20px;
+      overflow:hidden; box-shadow:0 40px 120px rgba(0,0,0,0.6);
+      transform:translateY(16px); transition:transform 0.25s;
+      max-height:90vh; display:flex; flex-direction:column;
+    }
+    .modal-overlay.open .modal-box { transform:translateY(0); }
+    .modal-hdr {
+      padding:20px 24px; border-bottom:1px solid var(--rim);
+      display:flex; align-items:center; justify-content:space-between; flex-shrink:0;
+    }
+    .modal-title { font-family:var(--fd); font-size:16px; font-weight:700; }
+    .modal-close {
+      background:none; border:none; color:var(--ink3); font-size:20px;
+      cursor:pointer; line-height:1; padding:4px; transition:color 0.2s;
+    }
+    .modal-close:hover { color:var(--ink); }
+    .modal-body { padding:24px; overflow-y:auto; flex:1; }
+
+    /* CSV Modal */
+    #csvModal .modal-box { width:560px; }
+    .csv-format-box { background:rgba(2,4,8,0.7); border:1px solid var(--rim); border-radius:10px; padding:14px; margin-bottom:16px; }
+    .csv-format-title { font-family:var(--fm); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--ink3); margin-bottom:8px; }
+    .csv-format-code { font-family:var(--fm); font-size:11px; color:var(--ink2); line-height:1.8; white-space:pre-wrap; word-break:break-all; }
+    .csv-drop-zone {
+      border:2px dashed var(--line); border-radius:12px; padding:36px 20px;
+      text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:12px;
+    }
+    .csv-drop-zone:hover { border-color:var(--teal); background:rgba(0,229,204,0.03); }
+    .csv-drop-icon { font-size:36px; margin-bottom:12px; }
+    .csv-drop-text { font-size:14px; color:var(--ink2); margin-bottom:6px; }
+    .csv-drop-sub  { font-size:12px; color:var(--ink3); }
+    #csvFileInput  { display:none; }
+    .csv-success   { color:var(--lime); font-size:13px; font-weight:600; }
+    .csv-error     { color:var(--rose); font-size:13px; }
+    .csv-names     { color:var(--ink3); font-size:11px; margin-top:4px; font-family:var(--fm); }
+    #csvPreview    { margin-top:12px; min-height:20px; }
+    .btn-secondary {
+      width:100%; padding:12px; margin-top:12px;
+      background:none; border:1px solid var(--line); border-radius:10px;
+      color:var(--ink2); font-family:var(--fd); font-size:14px; cursor:pointer; transition:all 0.2s;
+    }
+    .btn-secondary:hover { border-color:var(--neon); color:var(--neon); }
+
+    /* Chat Modal */
+    #chatModal .modal-box { width:640px; height:80vh; }
+    .chat-messages { display:flex; flex-direction:column; gap:10px; overflow-y:auto; flex:1; }
+    .chat-bubble { padding:12px 16px; border-radius:12px; max-width:88%; }
+    .chat-bubble.recruiter { background:rgba(0,144,255,0.08); border:1px solid rgba(0,144,255,0.15); border-radius:2px 12px 12px 12px; align-self:flex-start; }
+    .chat-bubble.candidate { background:rgba(124,58,237,0.08); border:1px solid rgba(124,58,237,0.15); border-radius:12px 2px 12px 12px; align-self:flex-end; }
+    .chat-bubble.system    { background:rgba(42,74,106,0.3); border:1px solid var(--rim); border-radius:8px; font-size:12px; color:var(--ink3); align-self:center; max-width:100%; text-align:center; }
+    .chat-label { font-family:var(--fm); font-size:9px; letter-spacing:1px; text-transform:uppercase; opacity:0.5; margin-bottom:4px; }
+    .chat-text  { font-size:13px; line-height:1.65; color:var(--ink); }
+    .chat-input-row { display:flex; gap:10px; padding:16px 24px; border-top:1px solid var(--rim); flex-shrink:0; background:rgba(6,13,24,0.6); }
+    .chat-input { flex:1; background:rgba(6,13,24,0.8); border:1px solid var(--rim); border-radius:10px; color:var(--ink); font-family:var(--fb); font-size:13px; padding:10px 14px; outline:none; resize:none; height:44px; transition:border-color 0.2s; }
+    .chat-input:focus { border-color:rgba(124,58,237,0.4); }
+    .chat-send-btn { padding:10px 18px; background:linear-gradient(135deg,var(--plasma),var(--plasma2)); border:none; border-radius:10px; color:white; font-family:var(--fd); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+    .chat-send-btn:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 4px 16px rgba(124,58,237,0.4); }
+    .chat-send-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .typing-indicator .dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--ink3); margin:0 2px; animation:dotbounce 1.2s infinite; }
+    .typing-indicator .dot:nth-child(2) { animation-delay:0.2s; }
+    .typing-indicator .dot:nth-child(3) { animation-delay:0.4s; }
+    @keyframes dotbounce { 0%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-6px);} }
+
+    @media(max-width:640px) {
+      #csvModal .modal-box, #chatModal .modal-box { width:95vw; }
+      .breakdown-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── BACKGROUND FX ─────────────────────────────────────────────────────── -->
+<div class="ambient"></div>
+<div class="grid-overlay"></div>
+<div class="scanline"></div>
+<div id="particles-js"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CSV UPLOAD MODAL
+     Note: no onclick attributes — all events attached in app.js
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="csvModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-title">📄 Upload Candidate CSV</div>
+      <button class="modal-close" id="csvModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="csv-format-box">
+        <div class="csv-format-title">Required CSV Format</div>
+        <div class="csv-format-code">name,role,company,experience,location,remote,skills,salary,available,bio
+"Priya Sharma","ML Engineer","Google",5,"Hyderabad",true,"Python,PyTorch,LLMs",50,"30 days","LLM fine-tuning at Google Brain"
+"Arjun Mehta","Backend Eng","Flipkart",6,"Bangalore",true,"Python,FastAPI,AWS",35,"Immediately","Payments 10M txns/day"</div>
+      </div>
+      <div class="csv-drop-zone" id="csvDropZone">
+        <div class="csv-drop-icon">📂</div>
+        <div class="csv-drop-text">Click to choose a CSV file</div>
+        <div class="csv-drop-sub">Supports .csv files · columns: name, role, company, experience, location, remote, skills, salary, available, bio</div>
+        <input type="file" id="csvFileInput" accept=".csv,text/csv"/>
+      </div>
+      <div id="csvPreview"></div>
+      <button class="btn-secondary" id="csvModalDone">✓ Done — Use These Candidates</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     LIVE CHAT MODAL
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-title" id="chatTitle">Live Candidate Chat</div>
+      <button class="modal-close" id="chatModalClose">✕</button>
+    </div>
+    <div class="modal-body" style="padding:16px; display:flex; flex-direction:column;">
+      <div class="chat-messages" id="chatMessages"></div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="Type your message as the recruiter… (Enter to send)" rows="1"></textarea>
+      <button class="chat-send-btn" id="chatSendBtn">Send ↑</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     APP
+══════════════════════════════════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <div class="logo-mark">🎯</div>
+      <span class="logo-text">TalentAI</span>
+      <span class="logo-tag">v2.0</span>
+    </div>
+    <div class="nav-dots">
+      <div class="ndot" id="nd1"></div>
+      <div class="ndot-sep"></div>
+      <div class="ndot" id="nd2"></div>
+      <div class="ndot-sep"></div>
+      <div class="ndot" id="nd3"></div>
+      <div class="ndot-sep"></div>
+      <div class="ndot" id="nd4"></div>
+    </div>
+    <div class="nav-status">
+      <div class="sdot" id="sdot"></div>
+      <span id="sstat">LOADING…</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-kicker"><div class="kicker-dot"></div>Catalyst Hackathon 2025 — AI Recruitment Agent</div>
+    <h1 class="hero-title">
+      <span class="l1">Find. Engage.</span>
+      <span class="l2">Hire Smarter.</span>
+    </h1>
+    <p class="hero-sub">Drop a job description. Our 4-step AI agent discovers best-fit candidates, simulates conversations to gauge genuine interest, and delivers a recruiter-ready ranked shortlist — in under 60 seconds.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-num">30<span>+</span></div><div class="hstat-label">Built-in Candidates</div></div>
+      <div class="hstat"><div class="hstat-num">CSV</div><div class="hstat-label">Upload Your Own</div></div>
+      <div class="hstat"><div class="hstat-num">2<span>D</span></div><div class="hstat-label">Score Dimensions</div></div>
+      <div class="hstat"><div class="hstat-num">Live</div><div class="hstat-label">AI Chat</div></div>
+    </div>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div class="workspace">
+
+    <!-- ── LEFT COLUMN ─────────────────────────────────────────────────── -->
+    <div class="left-col">
+
+      <!-- JD Input Panel -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="ph-ico" style="background:rgba(0,144,255,0.1);">📋</div>
+          <div><div class="ph-ttl">Job Description</div><div class="ph-sub">Paste your JD or load a sample</div></div>
+          <div class="ph-bdg" style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);color:var(--neon);">JD INPUT</div>
+        </div>
+        <div class="panel-body">
+
+          <label class="flabel" for="jdIn">Job Description Text</label>
+          <div class="jd-wrap">
+            <textarea class="jd-ta" id="jdIn"
+              placeholder="Paste the full job description here…
+
+Example:
+Senior Backend Engineer, 5+ years Python / FastAPI / PostgreSQL, AWS, Kafka microservices. Bangalore hybrid. ₹30–45 LPA. Start ASAP."></textarea>
+            <div class="char-ct" id="charCt">0 chars</div>
+          </div>
+
+          <label class="flabel" for="apiKey" style="margin-top:14px;">Gemini API Key</label>
+          <div class="api-wrap">
+            <input type="password" class="api-in" id="apiKey"
+              placeholder="AIzaSy…" autocomplete="off"
+              spellcheck="false"/>
+            <!-- id="eyeBtn" — handler attached in app.js -->
+            <button class="api-eye" id="eyeBtn" type="button" aria-label="Show/hide API key">
+              <span id="eyeIcon">👁</span>
+            </button>
+          </div>
+
+          <!-- id="runBtn" — handler attached in app.js -->
+          <button class="btn-run" id="runBtn" type="button">
+            <div class="btn-inner" id="btnInner">⚡ Launch Talent Scout Agent</div>
+          </button>
+
+          <!-- Candidate source indicator -->
+          <div id="candidateSourceBadge">
+            <span class="source-badge builtin">🗄️ Built-in pool · 30 candidates</span>
+          </div>
+
+          <!-- id="csvUploadBtn" — handler attached in app.js -->
+          <button class="csv-upload-btn" id="csvUploadBtn" type="button">
+            📄 Upload Your Own Candidates (CSV)
+          </button>
+
+          <!-- Live terminal log -->
+          <div class="terminal" id="term">
+            <div class="term-bar">
+              <div class="tbd" style="background:#ff5f57"></div>
+              <div class="tbd" style="background:#febc2e"></div>
+              <div class="tbd" style="background:#28c840"></div>
+              <span class="term-title">agent.log</span>
+            </div>
+            <div class="term-body" id="termBody"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sample JDs Panel -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="ph-ico" style="background:rgba(124,58,237,0.1);">💡</div>
+          <div><div class="ph-ttl">Sample Roles</div><div class="ph-sub">Click to load a demo job description</div></div>
+        </div>
+        <div class="panel-body">
+          <div class="samples-grid" id="samplesGrid">
+            <div style="color:var(--ink3);font-size:12px;grid-column:span 2;text-align:center;padding:16px 0;">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline Status Panel -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="ph-ico" style="background:rgba(0,229,204,0.1);">⚙️</div>
+          <div><div class="ph-ttl">Agent Pipeline</div><div class="ph-sub">Live execution status</div></div>
+        </div>
+        <div class="pipe-steps">
+          <div class="pipe-step" id="ps1">
+            <div class="pipe-vl"></div>
+            <div class="pipe-node" id="pn1">🔍</div>
+            <div class="pipe-content">
+              <div class="pipe-name">JD Parser</div>
+              <div class="pipe-detail" id="pd1">Extracts role, skills, experience requirements</div>
+            </div>
+            <div class="pipe-tag t-wait" id="pt1">WAIT</div>
+          </div>
+          <div class="pipe-step" id="ps2">
+            <div class="pipe-vl"></div>
+            <div class="pipe-node" id="pn2">👥</div>
+            <div class="pipe-content">
+              <div class="pipe-name">Candidate Discovery</div>
+              <div class="pipe-detail" id="pd2">Scans talent pool & computes match scores</div>
+            </div>
+            <div class="pipe-tag t-wait" id="pt2">WAIT</div>
+          </div>
+          <div class="pipe-step" id="ps3">
+            <div class="pipe-vl"></div>
+            <div class="pipe-node" id="pn3">💬</div>
+            <div class="pipe-content">
+              <div class="pipe-name">Conversational Engagement</div>
+              <div class="pipe-detail" id="pd3">Simulates outreach & scores genuine interest</div>
+            </div>
+            <div class="pipe-tag t-wait" id="pt3">WAIT</div>
+          </div>
+          <div class="pipe-step" id="ps4">
+            <div class="pipe-node" id="pn4">📊</div>
+            <div class="pipe-content">
+              <div class="pipe-name">Rank & Shortlist</div>
+              <div class="pipe-detail" id="pd4">Combined scoring · 0.6×Match + 0.4×Interest</div>
+            </div>
+            <div class="pipe-tag t-wait" id="pt4">WAIT</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /left-col -->
+
+    <!-- ── RIGHT COLUMN ────────────────────────────────────────────────── -->
+    <div class="right-col">
+
+      <!-- Parsed JD (hidden until agent runs) -->
+      <div class="panel" id="parsedPanel" style="display:none;">
+        <div class="panel-hdr">
+          <div class="ph-ico" style="background:rgba(0,255,136,0.08);">✅</div>
+          <div><div class="ph-ttl">Parsed Job Description</div><div class="ph-sub">Structured extraction via Gemini</div></div>
+          <div class="ph-bdg" style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.15);color:var(--lime);">EXTRACTED</div>
+        </div>
+        <div class="panel-body" id="parsedBody"></div>
+      </div>
+
+      <!-- Results panel -->
+      <div class="panel" id="resPanel">
+
+        <!-- Empty / waiting state -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-orbit"><div class="eo-inner">🎯</div></div>
+          <div class="empty-title">Mission Control Ready</div>
+          <div class="empty-sub">
+            Paste a job description, enter your Gemini API key,<br/>
+            and click <strong>Launch Talent Scout Agent</strong>.
+          </div>
+        </div>
+
+        <!-- Results list (hidden until agent completes) -->
+        <div id="resList" style="display:none;">
+          <div class="results-hdr">
+            <div>
+              <div class="res-title" id="resTitle">Shortlisted Candidates</div>
+              <div class="res-meta"  id="resMeta"></div>
+            </div>
+            <div class="formula-pill">
+              <span class="fp-accent">0.6</span>×Match + <span class="fp-accent">0.4</span>×Interest
+            </div>
+          </div>
+          <div class="clist" id="clist"></div>
+        </div>
+
+      </div><!-- /resPanel -->
+
+    </div><!-- /right-col -->
+  </div><!-- /workspace -->
+</div><!-- /app -->
+
+<!-- ── Third-party libraries (CDN) ─────────────────────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.3/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+
+<!-- ── App scripts (order matters: api → ui → render → app) ───────────── -->
+<script src="/js/api.js"></script>
+<script src="/js/ui.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/app.js"></script>
+
+</body>
+</html>

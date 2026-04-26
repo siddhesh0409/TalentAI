@@ -1,0 +1,13 @@
+name,role,company,experience,location,remote,skills,salary,available,bio
+"Ravi Shankar","Senior Backend Engineer","Meesho",6,"Bangalore",true,"Python,FastAPI,PostgreSQL,AWS,Redis,Kafka,Docker",38,"Immediately","Built Meesho's order management system processing 2M orders/day at scale."
+"Aisha Kapoor","ML Engineer","Juspay",4,"Bangalore",true,"Python,PyTorch,LLMs,MLOps,HuggingFace,Transformers,RLHF",42,"30 days","Fine-tuned LLMs for fraud detection at Juspay's payment intelligence team."
+"Suresh Iyer","DevOps Engineer","Freshworks",7,"Chennai",true,"Kubernetes,Terraform,AWS,CI/CD,Docker,Prometheus,Grafana,ArgoCD",32,"Immediately","Maintains 99.95% uptime for Freshworks' SaaS platform serving 60K customers."
+"Preethi Nair","Product Manager","Razorpay",5,"Mumbai",false,"Product Strategy,Roadmapping,SQL,Fintech,B2B SaaS,A/B Testing,OKRs",35,"60 days","Led Razorpay's Payment Links product from 0 to ₹500Cr GMV in 18 months."
+"Kartik Bose","Full Stack Engineer","Zepto",3,"Bangalore",true,"React,Node.js,PostgreSQL,AWS,TypeScript,GraphQL,Docker",26,"Immediately","Building Zepto's internal ops dashboard used by 2000+ delivery partners."
+"Divya Menon","Senior UX Designer","Swiggy",5,"Bangalore",true,"Figma,User Research,Mobile Design,Design Systems,Prototyping,Accessibility",28,"30 days","Redesigned Swiggy Instamart checkout flow — reduced drop-offs by 22%."
+"Aryan Malhotra","Data Scientist","Amazon",4,"Hyderabad",true,"Python,Machine Learning,SQL,Spark,NLP,Statistics,Feature Engineering",44,"Immediately","Working on demand forecasting models for Amazon Fresh last-mile delivery."
+"Shreya Bhat","Go Engineer","Zerodha",6,"Bangalore",false,"Go,gRPC,PostgreSQL,Redis,Microservices,Docker,Kafka,Performance",38,"45 days","Maintains Zerodha's order matching engine handling 10M trades per day."
+"Naveen Kumar","Cloud Architect","Infosys",9,"Pune",true,"AWS,Azure,Terraform,Kubernetes,Security,Cost Optimization,Architecture",55,"90 days","Architected hybrid cloud for 3 Fortune 500 banking clients at Infosys."
+"Tanvi Shah","Android Developer","CRED",5,"Bangalore",true,"Android,Kotlin,Jetpack Compose,MVVM,Firebase,Performance,CI/CD",35,"Immediately","Built CRED's payment UI handling ₹1000Cr+ monthly transactions on Android."
+"Rohit Gupta","Senior SRE","Atlassian",8,"Bangalore",true,"SRE,Kubernetes,Prometheus,Grafana,AWS,Incident Management,Python,Terraform",45,"60 days","Maintains 99.99% SLA for Atlassian's Jira Cloud with 200K+ active orgs."
+"Meena Pillai","React Native Developer","Urban Company",4,"Chennai",true,"React Native,TypeScript,iOS,Android,Redux,GraphQL,Firebase,Performance",30,"Immediately","Built Urban Company partner app used by 80K+ professionals across 35 cities."

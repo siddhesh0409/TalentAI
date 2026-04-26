@@ -1,0 +1,124 @@
+═══════════════════════════════════════════════════════════════
+SAMPLE JOB DESCRIPTIONS FOR TALENTAI
+Paste any one of these into the JD input box and click Run.
+═══════════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────
+JD 1: SENIOR BACKEND ENGINEER — FINTECH
+──────────────────────────────────────────────────
+We are a fast-growing fintech startup processing millions of transactions daily.
+We need a Senior Backend Engineer to scale our payment infrastructure.
+
+Requirements:
+- 5+ years backend engineering experience
+- Expert-level Python (FastAPI preferred)
+- PostgreSQL, Redis, Kafka/message queues
+- AWS cloud (EC2, RDS, Lambda, SQS)
+- Microservices design & Docker/Kubernetes
+
+Nice to have:
+- Fintech or payments domain experience
+- Go language
+- PCI-DSS compliance knowledge
+
+Location: Bangalore (hybrid 3 days/week)
+CTC: ₹30–45 LPA | Start: Within 30 days
+
+──────────────────────────────────────────────────
+JD 2: ML ENGINEER — LLMs & GENERATIVE AI
+──────────────────────────────────────────────────
+We are building AI-native products powered by large language models
+and need a talented ML Engineer to join our core AI team.
+
+What you will work on:
+- Fine-tuning and evaluating LLMs (Llama, Mistral, Gemini)
+- Building RLHF and instruction-tuning pipelines
+- Deploying models to production with MLOps best practices
+- Evaluation frameworks for hallucination and safety
+
+Requirements:
+- 3+ years ML engineering
+- Strong PyTorch and HuggingFace experience
+- Transformers architecture knowledge (not just API usage)
+- MLOps: experiment tracking, model versioning, serving
+
+Nice to have:
+- Published research or open-source contributions
+- Experience with quantization/distillation
+- Multi-GPU training with FSDP or DeepSpeed
+
+Remote-first | CTC: ₹40–65 LPA
+
+──────────────────────────────────────────────────
+JD 3: PRODUCT MANAGER — B2B SAAS PLATFORM
+──────────────────────────────────────────────────
+Join our product team and own the roadmap for our core B2B SaaS platform
+used by 15,000 businesses across India and Southeast Asia.
+
+What you'll own:
+- Define and drive the product strategy and 12-month roadmap
+- Work closely with engineering, design, sales, and customer success
+- Use data to make informed decisions — SQL proficiency required
+- Run customer discovery, user research, and usability sessions
+- Define OKRs, track metrics, and communicate progress to leadership
+
+Requirements:
+- 5+ years product management, with at least 2 years in B2B/SaaS
+- Strong analytical mindset — comfortable writing SQL queries
+- Track record of shipping features that moved business metrics
+- Excellent written and verbal communication
+
+Nice to have:
+- Experience with enterprise or mid-market customers
+- Background in engineering or design
+
+Location: Bangalore or Mumbai (hybrid)
+CTC: ₹35–55 LPA
+
+──────────────────────────────────────────────────
+JD 4: DEVOPS / PLATFORM ENGINEER
+──────────────────────────────────────────────────
+We are building an internal developer platform to support 300+ engineers.
+Looking for a DevOps / Platform Engineer to own our cloud infrastructure and CI/CD.
+
+Core responsibilities:
+- Design, provision, and manage Kubernetes clusters on AWS
+- Build and maintain GitHub Actions + ArgoCD CI/CD pipelines
+- Infrastructure as code using Terraform
+- Observability stack: Prometheus, Grafana, alerting, dashboards
+- Developer experience tooling: internal portals, self-service deployments
+
+Must have:
+- 5+ years DevOps / Platform / SRE experience
+- Kubernetes (CKA preferred), Helm, Docker
+- Terraform on AWS (GCP experience is a plus)
+- Strong scripting skills (Bash, Python, or Go)
+
+Location: Bangalore (on-site preferred, some remote flexibility)
+CTC: ₹28–42 LPA
+
+──────────────────────────────────────────────────
+JD 5: SENIOR UX DESIGNER — MOBILE FIRST
+──────────────────────────────────────────────────
+We are completely redesigning our mobile experience for 5M+ users.
+Looking for a Senior UX Designer to lead this initiative end-to-end.
+
+What you'll own:
+- End-to-end UX for iOS and Android apps
+- User research planning, moderated testing, synthesis
+- Design system creation and governance
+- Handoff to engineering with detailed Figma specs and documentation
+
+Requirements:
+- 4+ years UX / product design experience
+- Expert in Figma (components, variants, auto-layout, prototyping)
+- Strong mobile design sensibility — deep familiarity with iOS HIG and Material Design
+- Proven user research methodology, not just "I talked to users"
+- Experience owning or contributing to a design system
+
+Nice to have:
+- Basic React or HTML/CSS knowledge
+- Accessibility (WCAG) expertise
+- E-commerce or consumer fintech background
+
+Location: Bangalore | CTC: ₹20–32 LPA
